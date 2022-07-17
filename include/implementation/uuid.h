@@ -28,30 +28,34 @@ SOFTWARE.
 
 namespace ya {
     template<typename random_algorithm_t = std::mt19937>
-    auto uuid_v4() -> std::string {
+    auto uuid_v4_custom(const char* header, const char* connector) -> std::string {
         std::random_device device{};
         random_algorithm_t gen{device()};
         std::uniform_int_distribution<> distribution1{0, 15};
         std::uniform_int_distribution<> distribution2{8, 11};
         std::stringstream ss;
         int i;
-        ss << std::hex;
+        ss << std::hex << header;
         for (i = 0; i < 8; i++)
             ss << distribution1(gen);
-        ss << "-";
+        ss << connector;
         for (i = 0; i < 4; i++)
             ss << distribution1(gen);
-        ss << "-4";
+        ss << connector << "4";
         for (i = 0; i < 3; i++)
             ss << distribution1(gen);
-        ss << "-";
+        ss << connector;
         ss << distribution2(gen);
         for (i = 0; i < 3; i++)
             ss << distribution1(gen);
-        ss << "-";
+        ss << connector;
         for (i = 0; i < 12; i++)
             ss << distribution1(gen);
         return ss.str();
+    }
+    template<typename random_algorithm_t = std::mt19937>
+    auto uuid_v4() -> std::string {
+        return uuid_v4_custom<random_algorithm_t>("","-");
     }
 }
 
